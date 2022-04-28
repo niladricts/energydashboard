@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to DashBoard! Upload your csv file to visualize your data</title>
+</head>
+<body>
+ {% if session["user"] %}
+    Logged in as <strong>{{ session["user"] }}</strong> <br />
+    <a href="{{ url_for('logout')}}">logout</a>
+    {%else%}
+    Login here {{ session["user"] }} <br />
+    <a href="{{ url_for('/')}}"> Login</a>
+    {%endif %}
+
+<form id="upload-form"  action="/upload" method="POST" enctype = "multipart/form-data">
+    <label >Upload file</label> &nbsp;
+  <input type="file" id="myFile" name="filename">
+  <input type="submit" value="UPLOAD">
+</form>
+</body>
+</html>

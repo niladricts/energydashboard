@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Visualizing data</title>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.7.0/d3.min.js"></script>
+</head>
+<body>
+{% if session["user"] %}
+    Logged in as <strong>{{ session["user"] }}</strong> <br />
+    <a href="{{ url_for('logout')}}">logout</a>
+    {%else%}
+    Login here {{ session["user"] }} <br />
+    <a href="{{ url_for('/')}}"> Login</a>
+    {%endif %}
+<br>
+<br>
+<canvas id="chart"></canvas>
+<script>
+
+
+            var file = '/uploads/energydata_complete.csv';
+            d3.csv(file).then(makeChart);
+            function makeChart(data) {
+                var label2 = data.map(function(d) {return d.lights});
+                var dayLabel = data.map(function(d){return d.date});
+                //Set Min for better visible range
+                var minX = d3.min(label2);
+                minX -= 10;
+
+                var chart = new Chart('chart', {
+                    type: 'line',
+                    data: {
+                        labels: dayLabel,
+                        datasets: [
+                            {
+                                data: label2
+                            }
+                        ]
+                    },
+                    options: {
+                        title: {
+                            display: true,
+                            text: file
+                        },
+                        legend: {
+                            display: false
+                        },
+                        scales: {
+                            xAxes: [
+                                {
+                                    ticks: {
+                                        suggestedMin: minX,
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                });
+            }
+        </script>
+</body>
+</html>
