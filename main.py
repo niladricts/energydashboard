@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, session, jsonify
+from flask import Flask, render_template, request, redirect, session
 from werkzeug.utils import secure_filename
 # from flask_login import login_required, current_user, login_user, logout_user
 import os
@@ -9,7 +9,7 @@ app = Flask(__name__, template_folder='template', static_folder='uploads')
 
 credentials = {"user": "admin", "password": "admin"}
 
-app.secret_key = "1191"
+app.secret_key = " "
 app.config['UPLOAD_PATH'] = 'uploads'
 
 
@@ -22,7 +22,7 @@ def index():
         if username == credentials["user"] and password == credentials["password"]:
             session["user"] = username
             return redirect("/dashboard")
-        return "<h2> Wrong username/ password combination</h2>"
+        return "<h2>Invalid Credentials</h2>"
     return render_template("login.html")
 
 
@@ -54,8 +54,11 @@ def upload():
 # route for validating csv file
 @app.route('/checkdata')
 def checkData():
-    if v.checkCSV() == "Yes":
+    issues = v.checkCSV()
+    if len(issues) == 0:
         return redirect("/showdata")
+    else:
+        return render_template('dashboard.html', error=issues)
 
 
 # route for showing options
